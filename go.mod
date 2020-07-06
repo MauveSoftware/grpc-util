@@ -6,6 +6,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/pkg/errors v0.9.1
+	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/stretchr/testify v1.4.0
 	golang.org/x/lint v0.0.0-20190313153728-d0100b6bd8b3 // indirect
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553 // indirect

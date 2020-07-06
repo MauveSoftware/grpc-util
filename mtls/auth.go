@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/peer"
@@ -24,5 +25,6 @@ func (a *auth) filterAllowedCNs(ctx context.Context, req interface{}, info *grpc
 		}
 	}
 
+	logrus.Warn("CN of client is not in list of allowed CNs")
 	return nil, errors.Errorf("CN of client is not in list of allowed CNs")
 }

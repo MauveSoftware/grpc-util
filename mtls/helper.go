@@ -29,6 +29,7 @@ func LoadTLSCert(cfg *TLSConfig) (*tls.Config, error) {
 		ClientAuth:   tls.RequireAndVerifyClientCert,
 		Certificates: []tls.Certificate{certificate},
 		ClientCAs:    capool,
+		RootCAs:      capool,
 	}, nil
 }
 
