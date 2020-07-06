@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func loadTLSCert(cfg *TLSConfig) (*tls.Config, error) {
+func LoadTLSCert(cfg *TLSConfig) (*tls.Config, error) {
 	certificate, err := tls.LoadX509KeyPair(cfg.CertFile, cfg.KeyFile)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not load certificate")

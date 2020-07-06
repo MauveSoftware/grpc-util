@@ -11,7 +11,7 @@ func NewGRPCServer(cfg *TLSConfig, opt ...grpc.ServerOption) (*grpc.Server, erro
 		return grpc.NewServer(opt...), nil
 	}
 
-	tlsConfig, err := loadTLSCert(cfg)
+	tlsConfig, err := LoadTLSCert(cfg)
 	if err != nil {
 		return nil, err
 	}
