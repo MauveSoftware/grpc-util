@@ -1,4 +1,4 @@
-module mauve.de/automation/grpc-helper
+module github.com/MauveSoftware/grpc-helper
 
 go 1.14
 
