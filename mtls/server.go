@@ -5,13 +5,15 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-// NewGRPCServer creates a new GRPC server with TLS configured
-func NewGRPCServer(cfg *TLSConfig, opt ...grpc.ServerOption) (*grpc.Server, error) {
+// ServerOptions returns the server options needed to fulfil the transport encryption requirements defined in the TLS config
+func ServerOptions(cfg *TLSConfig) ([]grpc.ServerOption, error) {
+	opt := []grpc.ServerOption{}
+
 	if !cfg.Enabled {
-		return grpc.NewServer(opt...), nil
+		return opt, nil
 	}
 
-	tlsConfig, err := LoadTLSCert(cfg)
+	tlsConfig, err := loadTLSCert(cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -25,5 +27,5 @@ func NewGRPCServer(cfg *TLSConfig, opt ...grpc.ServerOption) (*grpc.Server, erro
 	opt = append(opt, grpc.ChainStreamInterceptor(auth.authenticateStream))
 	opt = append(opt, grpc.ChainUnaryInterceptor(auth.authenticateRequest))
 
-	return grpc.NewServer(opt...), nil
+	return opt, nil
 }
