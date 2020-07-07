@@ -1,4 +1,4 @@
-module github.com/MauveSoftware/grpc-common
+module github.com/MauveSoftware/grpc-util
 
 go 1.14
 
