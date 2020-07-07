@@ -22,7 +22,8 @@ func NewGRPCServer(cfg *TLSConfig, opt ...grpc.ServerOption) (*grpc.Server, erro
 	auth := &auth{
 		cfg: cfg,
 	}
-	opt = append(opt, grpc.ChainUnaryInterceptor(auth.filterAllowedCNs))
+	opt = append(opt, grpc.ChainStreamInterceptor(auth.authenticateStream))
+	opt = append(opt, grpc.ChainUnaryInterceptor(auth.authenticateRequest))
 
 	return grpc.NewServer(opt...), nil
 }
