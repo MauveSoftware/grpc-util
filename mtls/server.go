@@ -24,8 +24,7 @@ func ServerOptions(cfg *TLSConfig) ([]grpc.ServerOption, error) {
 	auth := &auth{
 		cfg: cfg,
 	}
-	opt = append(opt, grpc.ChainStreamInterceptor(auth.authenticateStream))
-	opt = append(opt, grpc.ChainUnaryInterceptor(auth.authenticateRequest))
+	opt = append(opt, grpc.ChainStreamInterceptor(auth.authenticateStream), grpc.ChainUnaryInterceptor(auth.authenticateRequest))
 
 	return opt, nil
 }
