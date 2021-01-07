@@ -1,13 +1,27 @@
 package mtls
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"io/ioutil"
 	"strings"
 
 	"github.com/pkg/errors"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/peer"
 )
+
+// CertificatesFromContext extracts x509 certificate information from given context
+func CertificatesFromContext(ctx context.Context) []*x509.Certificate {
+	if p, ok := peer.FromContext(ctx); ok {
+		if mtls, ok := p.AuthInfo.(credentials.TLSInfo); ok {
+			return mtls.State.PeerCertificates
+		}
+	}
+
+	return []*x509.Certificate{}
+}
 
 func loadTLSCert(cfg *TLSConfig) (*tls.Config, error) {
 	certificate, err := tls.LoadX509KeyPair(cfg.CertFile, cfg.KeyFile)
