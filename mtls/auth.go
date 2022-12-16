@@ -5,29 +5,37 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-type auth struct {
-	cfg *TLSConfig
+type authenticator struct {
+	cfg       *TLSConfig
+	listeners []Listener
 }
 
-func (a *auth) authenticateStream(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+func (a *authenticator) authenticateStream(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 	for _, item := range CertificatesFromContext(ss.Context()) {
 		if isInAllowedCNs(item.Subject.CommonName, a.cfg.AllowedCNs) {
+			for _, l := range a.listeners {
+				l(item)
+			}
 			handler(srv, ss)
 			return nil
 		}
 	}
 
-	return grpc.Errorf(codes.PermissionDenied, "Authentication failed.")
+	return status.Errorf(codes.PermissionDenied, "Authentication failed.")
 }
 
-func (a *auth) authenticateRequest(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+func (a *authenticator) authenticateRequest(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 	for _, item := range CertificatesFromContext(ctx) {
 		if isInAllowedCNs(item.Subject.CommonName, a.cfg.AllowedCNs) {
+			for _, l := range a.listeners {
+				l(item)
+			}
 			return handler(ctx, req)
 		}
 	}
 
-	return nil, grpc.Errorf(codes.PermissionDenied, "Authentication failed.")
+	return nil, status.Errorf(codes.PermissionDenied, "Authentication failed.")
 }
