@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -29,7 +29,7 @@ func loadTLSCert(cfg *TLSConfig) (*tls.Config, error) {
 		return nil, errors.Wrap(err, "could not load certificate")
 	}
 
-	ca, err := ioutil.ReadFile(cfg.CAFile)
+	ca, err := os.ReadFile(cfg.CAFile)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not load CA certificate")
 	}
@@ -62,7 +62,7 @@ func matchesAllowPattern(commonName, allowPattern string) bool {
 		return true
 	}
 
-	if strings.ToLower(allowPattern) == strings.ToLower(commonName) {
+	if strings.EqualFold(allowPattern, commonName) {
 		return true
 	}
 
