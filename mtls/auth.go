@@ -13,7 +13,7 @@ type authenticator struct {
 	listeners []Listener
 }
 
-func (a *authenticator) authenticateStream(srv interface{}, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
+func (a *authenticator) authenticateStream(srv any, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 	for _, item := range CertificatesFromContext(ss.Context()) {
 		if isInAllowedCNs(item.Subject.CommonName, a.cfg.AllowedCNs) {
 			for _, l := range a.listeners {
@@ -27,7 +27,7 @@ func (a *authenticator) authenticateStream(srv interface{}, ss grpc.ServerStream
 	return status.Errorf(codes.PermissionDenied, "Authentication failed.")
 }
 
-func (a *authenticator) authenticateRequest(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+func (a *authenticator) authenticateRequest(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 	for _, item := range CertificatesFromContext(ctx) {
 		if isInAllowedCNs(item.Subject.CommonName, a.cfg.AllowedCNs) {
 			for _, l := range a.listeners {
