@@ -1,6 +1,6 @@
 module github.com/MauveSoftware/grpc-util
 
-go 1.26.6
+go 1.26.9
 
 require (
 	github.com/pkg/errors v0.9.1
